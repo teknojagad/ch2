@@ -2,17 +2,30 @@
 error_reporting( E_ALL );
 ini_set( "display_errors", 1 );
 
-$title = "Test title";
-$content = "<h1>Hello World</h1>";
-$page = "
-<!DOCTYPE html>
-<html>
-<head>
-<title>$title</title>
-    <meta http-equiv='Content-Type' content='text/html;charset=utf-8'/>
-</head>
-<body>
-$content
-<body>
-</html>";
+include_once "classes/Page_Data.class.php";
+$pageData = new Page_Data();
+//$pageData = new stdClass();
+$pageData->title = "Thomas Blom Hansen: Portfolio site";
+$pageData->content = include_once "views/navigation.php";
+$pageData->css = "<link href='css/layout.css' rel='stylesheet' />";
+$navigationIsClicked = isset($_GET['page']);
+if ($navigationIsClicked) {
+    $fileToLoad = $_GET['page'];
+} else {
+    $fileToLoad = "skills";
+}
+$pageData->content .= include_once "views/$fileToLoad.php";
+
+//dynamic style
+$pageData->embeddedStyle = "
+<style>
+nav a[href *= '?page=$fileToLoad']{
+    padding:3px;
+    background-color:white;
+    border-top-left-radius:3px;
+    border-top-right-radius:3px;
+}
+</style>";
+
+$page = include_once "templates/page.php";
 echo $page;
